@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: test-k8s
+  name: django-env
+data:
+  DJANGO_DEBUG: "0"
+  RUNTIME_ENV: "PROD"
+  DJANGO_SETTINGS_MODULE: "config.settings.production"
+  DJANGO_SECRET_KEY: "b29wiW73vJhh3UrCVVFxkYMqLjbsvl8g"
+  DJANGO_ADMIN_URL: "admin/"
+  DJANGO_ALLOWED_HOSTS: ".ikigaidojo.ninja,.bossdesk.xyz"
+  DJANGO_SECURE_SSL_REDIRECT: "False"
+  DJANGO_SERVER_EMAIL: ""
+  MAILGUN_API_KEY: ""
+  MAILGUN_DOMAIN: ""
+  DJANGO_ACCOUNT_ALLOW_REGISTRATION: "True"
+  WEB_CONCURRENCY: "4"
+  SENTRY_DSN: ""
+  # #REDIS_URL: "redis://default:socrotescoffee@redis:6379/0"
+  # REDIS_URL: "redis://default:AVNS_6h6MB2S6N3DQu2r3Ezo@db-redis-nyc1-13574-do-user-10228058-0.b.db.ondigitalocean.com:25061"
+  REDIS_URL: "redis://default:AVNS_9ZcQQxUCrLaSY41kwB1@private-db-redis-nyc3-67768-do-user-10228058-0.b.db.ondigitalocean.com:25061"
+  CELERY_BROKER_URL: "redis://default:AVNS_9ZcQQxUCrLaSY41kwB1@private-db-redis-nyc3-67768-do-user-10228058-0.b.db.ondigitalocean.com:25061"
+  CELERY_FLOWER_USER: "flower"
+  CELERY_FLOWER_PASSWORD: "flower"
+  YT_API_KEY: "AIzaSyDLTKG_yxJypSuv5KvM4yq0rOfuP0DCkPY"
+  ENDPOINT_URL: "https://ewr1.vultrobjects.com"
+  AWS_ACCESS_KEY_ID: "A9ZBNCH9390JAWJEVE59"
+  AWS_SECRET_ACCESS_KEY: "J1sZQxZ76ZTBP3Wm9sxhKeZfFayGnFkAIrVrBBHR"
+  POSTGRES_HOST: "db.uukkuoxgayujrukubywa.supabase.co"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "postgres"
+  POSTGRES_USER: "postgres"
+  USE_DOCKER: "False"
+# TODO: copy over  prod's .django

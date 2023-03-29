@@ -1,0 +1,24 @@
+version: '3'
+
+volumes:
+  production_traefik: {}
+
+services:
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: aininjas_production_traefik
+    restart: on-failure
+    volumes:
+      - production_traefik:/etc/traefik/acme
+      - ./compose/production/traefik/traefik.yml:/etc/traefik/traefik.yml    
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    networks:
+      - ikigaidojo_network      
+networks:
+  ikigaidojo_network:
+    external: true

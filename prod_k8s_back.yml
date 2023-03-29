@@ -1,0 +1,93 @@
+version: '3'
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  production_tmp_files: {}
+  production_staticfiles: {}
+  production_next: {}
+  production_redis_data: {}
+  # production_traefik: {}
+
+networks:
+  ikigaidojo_network:
+    external: true
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    # image: aininjas_production_django
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_django:latest
+    depends_on:
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.supabase
+      - redis.env
+    command: /start
+    environment:
+      DJANGO_DEBUG: 0
+      RUNTIME_ENV: PROD
+    volumes:
+      - /home/bryanl/100gbdrive/tmp:/tmp
+      - ./.:/app:z
+    # ports:
+    #   - "8013:5000"
+    networks:
+      - ikigaidojo_network
+
+  celeryworker:
+    <<: *django
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_celeryworker:latest
+    # image: aininjas_production_celeryworker
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    depends_on:
+      # - postgres
+      - redis
+    command: /start-celeryworker
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.supabase
+      - redis.env
+    environment:
+      RUNTIME_ENV: PROD
+    volumes:
+      - /home/bryanl/100gbdrive/tmp:/tmp
+      - ./.:/app:z
+    networks:
+      - ikigaidojo_network
+
+  celerybeat:
+    <<: *django
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_celerybeat:latest
+    # image: aininjas_production_celerybeat
+    command: /start-celerybeat
+    networks:
+      - ikigaidojo_network
+
+  flower:
+    <<: *django
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_flower:latest
+    # image: aininjas_production_flower
+    command: /start-flower
+    networks:
+      - ikigaidojo_network
+
+
+  redis:
+    image: redis:6
+    restart: unless-stopped
+    ports:
+      - "6378:6379"
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_HOST_PASSWORD"
+    env_file:
+      - redis.env
+    volumes:
+      - production_redis_data:/data
+    networks:
+      - ikigaidojo_network
+

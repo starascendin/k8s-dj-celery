@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: test-k8s
+  name: envs-production-postgres
+data:
+  POSTGRES_HOST: db.uukkuoxgayujrukubywa.supabase.co
+
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: postgres
+  POSTGRES_USER: postgres

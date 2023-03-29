@@ -1,0 +1,31 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+# Redis
+# ------------------------------------------------------------------------------
+REDIS_URL=redis://default:socrotescoffee@dev_redis:6379/0
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+CELERY_FLOWER_USER=flower
+CELERY_FLOWER_PASSWORD=flower
+
+
+# ## These are for local env run.
+# DATABASE_URL=postgres://postgres:postgres@127.0.0.1:15432/aininjas
+# Optional: set broker URL if using Celery
+CELERY_BROKER_URL=redis://default:socrotescoffee@localhost:6379/0
+
+
+# BLL: Add these to render or any platforms
+YT_API_KEY=AIzaSyDLTKG_yxJypSuv5KvM4yq0rOfuP0DCkPY
+
+# TODO: will need to update this since i deleted my orig Openai account
+
+# Vultr S3
+ENDPOINT_URL=https://ewr1.vultrobjects.com
+AWS_ACCESS_KEY_ID=A9ZBNCH9390JAWJEVE59
+AWS_SECRET_ACCESS_KEY=J1sZQxZ76ZTBP3Wm9sxhKeZfFayGnFkAIrVrBBHR

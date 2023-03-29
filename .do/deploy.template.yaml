@@ -1,0 +1,8 @@
+spec:
+  name: aininja-dev
+  services:
+  - dockerfile_path: compose/production/django/Dockerfile
+    git:
+      branch: do
+      repo_clone_url: https://github.com/starascendin/aininjas.git
+    name: aininja-django-dev

@@ -1,0 +1,38 @@
+version: '3'
+
+# BL: DEV is ikigaidojo, which uses .dev
+# When I need a real PROD env, i'll make a separate envs.
+
+services:
+  dev_django: &dev_django
+    env_file:
+      - ./.envs/.dev/.django
+      - ./.envs/.dev/.supabase
+    environment:
+      RUNTIME_ENV: DEV
+    volumes:      
+      - /home/bryanl/100gbdrive/tmp:/tmp    
+
+
+  dev_celeryworker: &dev_celeryworker
+    env_file:
+      - ./.envs/.dev/.django
+      - ./.envs/.dev/.supabase
+    environment:
+      RUNTIME_ENV: DEV
+    volumes:      
+      - /home/bryanl/100gbdrive/tmp:/tmp    
+
+
+  dev_celerybeat:
+    <<: *dev_celeryworker
+
+  dev_flower:
+    <<: *dev_celeryworker
+
+  dev_frontend: &dev_frontend
+    env_file:
+      - ./bossdesk-app/.env.dev
+      - ./bossdesk-app/app/.env.development
+    environment:
+      RUNTIME_ENV: DEV

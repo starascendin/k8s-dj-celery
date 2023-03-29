@@ -1,0 +1,31 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - do # Change this to your default branch, if different.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATEKEY_ID_STAR }}
+
+    - name: Add DigitalOcean to known_hosts
+      run: ssh-keyscan -H ${{ secrets.AININJAS_DROPLET_IP }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to DigitalOcean droplet
+      env:
+        DOCKER_HOST: "ssh://bryanl@${{ secrets.AININJAS_DROPLET_IP }}"
+      run: |
+        export DOCKER_CONTEXT=default
+        docker context use $DOCKER_CONTEXT
+        docker-compose -f prod.yml up -d --build
+        docker-compose -f prod.yml restart

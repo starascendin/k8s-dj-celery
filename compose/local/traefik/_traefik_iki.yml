@@ -1,0 +1,108 @@
+log:
+  level: INFO
+
+# BL: I should add "dev." for dev stack
+entryPoints:
+  web:
+    # http
+    address: ":80"
+    http:
+      # https://docs.traefik.io/routing/entrypoints/#entrypoint
+      redirections:
+        entryPoint:
+          to: web-secure
+
+  web-secure:
+    # https
+    address: ":443"
+
+  django:
+    address: ":5000"
+
+
+  flower:
+    address: ":5555"
+
+  frontend-http:
+    address: ":3000"
+
+certificatesResolvers:
+  letsencrypt:
+    # https://docs.traefik.io/master/https/acme/#lets-encrypt
+    acme:
+      email: "bryanNINJA@ikigaidojo.ninja"
+      storage: /etc/traefik/acme/acme.json
+      # https://docs.traefik.io/master/https/acme/#httpchallenge
+      httpChallenge:
+        entryPoint: web
+
+http:
+  routers:
+    web-secure-router:
+      rule: "Host(`ikigaidojo.ninja`) || Host(`www.ikigaidojo.ninja`) "
+      entryPoints:
+        - web-secure
+      middlewares:
+        - csrf
+      service: frontend
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+    flower-secure-router:
+      rule: "Host(`flower.ikigaidojo.ninja`)"
+      # entryPoints:
+      #   - flower
+      service: flower
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+
+    django-secure-router:
+      rule: "Host(`api.ikigaidojo.ninja`)"
+      # entryPoints:
+      #   - django
+      service: django
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+    frontend-secure-router:
+      rule: "Host(`app.ikigaidojo.ninja`)"
+      # entryPoints:
+      #   - frontend-http
+      service: frontend
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+
+  middlewares:
+    csrf:
+      # https://docs.traefik.io/master/middlewares/headers/#hostsproxyheaders
+      # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
+      headers:
+        hostsProxyHeaders: ["X-CSRFToken"]
+
+  services:
+    django:
+      loadBalancer:
+        servers:
+          - url: http://django:5000  # DCO
+          
+    frontend:
+      loadBalancer:
+        servers:
+          - url: http://frontend:3000
+
+    flower:
+      loadBalancer:
+        servers:
+          - url: http://flower:5555
+
+
+providers:
+  # https://docs.traefik.io/master/providers/file/
+  file:
+    filename: /etc/traefik/traefik.yml
+    watch: true

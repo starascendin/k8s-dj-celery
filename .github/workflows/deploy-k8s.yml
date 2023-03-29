@@ -1,0 +1,62 @@
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches:
+      - do # Replace with the branch you want to trigger the workflow
+
+env:
+  DIGITALOCEAN_REGISTRY: registry.digitalocean.com/aininjas-docker-registry
+  KUBECONFIG_FILE: kubeconfig.yaml
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to DigitalOcean Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.DIGITALOCEAN_REGISTRY }}
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        # username: ${{ secrets.DOCKER_REGISTRY_USERNAME }}
+        # password: ${{ secrets.DOCKER_REGISTRY_TOKEN }}
+
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ env.DIGITALOCEAN_REGISTRY }}/django:${{ github.sha }}
+          ${{ env.DIGITALOCEAN_REGISTRY }}/celeryworker:${{ github.sha }}
+          ${{ env.DIGITALOCEAN_REGISTRY }}/flower:${{ github.sha }}
+
+    # - name: Install and configure doctl
+    #   run: |
+    #     sudo snap install doctl
+    #     doctl auth init --access-token ${{ secrets.DIGITALOCEAN_API_TOKEN }}
+
+    # Install doctl.
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+
+    - name: Download kubeconfig file
+      run: doctl kubernetes cluster kubeconfig save my-cluster
+
+    - name: Deploy to Kubernetes
+      run: |
+        export KUBECONFIG=$GITHUB_WORKSPACE/${{ env.KUBECONFIG_FILE }}
+        envsubst < k8s_configs/django-env-configmap.yaml | kubectl apply -f -
+        kubectl apply -f k8s_configs/celeryworker-deployment.yaml
+        kubectl apply -f k8s_configs/django-deployment.yaml
+        kubectl apply -f k8s_configs/flower-deployment.yaml

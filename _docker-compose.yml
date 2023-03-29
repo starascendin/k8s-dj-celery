@@ -1,0 +1,119 @@
+version: '3'
+
+volumes:
+  hybrid_postgres_data: {}
+  hybrid_postgres_data_backups: {}
+  hybrid_traefik: {}
+  hybrid_staticfiles: {}
+  hybrid_next: {}
+  hybrid_redis_data: {}
+
+
+services:
+  dev_django: &dev_django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: aininjas_hybrid_django
+    depends_on:
+      # - postgres
+      - dev_redis
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.supabase
+      - redis.env
+    environment:
+      DJANGO_DEBUG: 0
+      RUNTIME_ENV: LOCAL
+    command: /start
+    volumes:
+      - ./.:/app:z
+      # - hybrid_staticfiles:/app/static/
+      - /tmp:/tmp
+    ports:
+      - "8012:5000"
+      - "5678:5678"
+
+  dev_celeryworker: &dev_celeryworker
+    image: aininjas_hybrid_celeryworker
+    command: /start-celeryworker
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    depends_on:
+      # - postgres
+      - dev_redis
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.supabase
+      - redis.env
+    volumes:
+      - ./.:/app:z
+      - hybrid_staticfiles:/app/static/
+      - /tmp:/tmp
+    environment:
+      RUNTIME_ENV: LOCAL
+
+  dev_celerybeat:
+    <<: *dev_celeryworker
+    image: aininjas_hybrid_celerybeat
+    command: /start-celerybeat
+
+  dev_flower:
+    <<: *dev_celeryworker
+    image: aininjas_hybrid_flower
+    command: /start-flower
+    ports:
+      - "5556:5555"
+
+  dev_frontend: &dev_frontend
+    build:
+      context: ./bossdesk-app/.
+      dockerfile: Dockerfile
+    image: aininjas_hybrid_frontend
+    volumes:
+      - ./bossdesk-app:/app:z
+      - hybrid_next:/app/app/.next
+    depends_on:
+      - dev_django
+    environment:
+      RUNTIME_ENV: LOCAL
+    ports:
+      - "3010:3000"
+
+  dev_redis:
+    image: redis:6
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_HOST_PASSWORD"
+    env_file:
+      - redis.env
+    volumes:
+      - hybrid_redis_data:/data
+
+  # dev_traefik:
+  #   build:
+  #     context: .
+  #     dockerfile: ./compose/local/traefik/Dockerfile
+  #   image: aininjas_hybrid_traefik
+  #   restart: on-failure
+  #   command:
+  #       - "--api.insecure=true"
+  #       - "--api.dashboard=true"
+  #       - "--providers.docker"
+  #       - "--log.level=DEBUG"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.myapp.rule=Host(`myapp.local`)"
+  #     - "traefik.http.routers.myapp.entrypoints=web"
+  #     - "traefik.http.services.myapp.loadbalancer.server.port=3000"        
+  #   depends_on:
+  #     - dev_django
+  #     - dev_frontend
+  #   volumes:
+  #     - ./compose/local/traefik/traefik.yml:/etc/traefik/traefik.yml    
+  #     - hybrid_traefik:/etc/traefik/acme
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"

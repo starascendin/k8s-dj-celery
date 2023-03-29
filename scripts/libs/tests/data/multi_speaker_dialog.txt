@@ -1,0 +1,9 @@
+Start,End,Speaker,Text
+0:00:00,0:00:30,SPEAKER 2,"INTRO --  speaker 2"
+0:00:30,0:00:40,SPEAKER 1,"speaker 1"
+0:00:40,0:00:50,SPEAKER 2,"speaker 2"
+0:00:50,0:00:55,SPEAKER 1,"speaker 1"
+0:00:55,0:01:10,SPEAKER 1,"Chapter 1 -- speaker 1"
+0:01:10,0:01:20,SPEAKER 2,"speaker 2"
+0:01:20,0:01:30,SPEAKER 2,"Chapter 2 --  speaker 2"
+0:01:30,0:01:40,SPEAKER 1,"speaker 1"

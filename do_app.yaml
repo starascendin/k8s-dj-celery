@@ -1,0 +1,110 @@
+name: bossdesk-dev
+region: nyc
+services:
+  - name: django
+    github:
+      branch: do
+      deploy_on_push: true
+      repo: starascendin/aininjas
+    dockerfile_path: compose/production/django/Dockerfile
+    # build_command: docker build -t aininjas_production_django .
+    run_command: /start
+    http_port: 5000
+    envs:
+      - key: DJANGO_DEBUG
+        value: '0'
+      - key: RUNTIME_ENV
+        value: 'PROD'
+      - key: REDIS_URL
+        value: rediss://default:AVNS_6h6MB2S6N3DQu2r3Ezo@db-redis-nyc1-13574-do-user-10228058-0.b.db.ondigitalocean.com:25061
+    routes:
+        - path: /
+
+
+  - name: celerybeat
+    github:
+      branch: do
+      deploy_on_push: true
+      repo: starascendin/aininjas
+    dockerfile_path: compose/production/django/Dockerfile
+    # build_command: docker build -t aininjas_production_celerybeat .
+    run_command: /start-celerybeat
+    envs:
+      - key: RUNTIME_ENV
+        value: 'PROD'
+      - key: REDIS_URL
+        value: rediss://default:AVNS_6h6MB2S6N3DQu2r3Ezo@db-redis-nyc1-13574-do-user-10228058-0.b.db.ondigitalocean.com:25061
+    routes:
+        - path: /beat
+
+  - name: flower
+    github:
+      branch: do
+      deploy_on_push: true
+      repo: starascendin/aininjas
+    dockerfile_path: compose/production/django/Dockerfile
+    # build_command: docker build -t aininjas_production_flower .
+    run_command: /start-flower
+    http_port: 5555
+    envs:
+      - key: RUNTIME_ENV
+        value: 'PROD'
+      - key: REDIS_URL
+        value: rediss://default:AVNS_6h6MB2S6N3DQu2r3Ezo@db-redis-nyc1-13574-do-user-10228058-0.b.db.ondigitalocean.com:25061
+    routes:
+        - path: /flower
+jobs:
+  - name: celeryworker
+    github:
+      branch: do
+      deploy_on_push: true
+      repo: starascendin/aininjas
+    dockerfile_path: compose/production/django/Dockerfile
+    # build_command: docker build -t aininjas_production_celeryworker .
+    run_command: /start-celeryworker
+    envs:
+      - key: RUNTIME_ENV
+        value: 'PROD'
+      - key: REDIS_URL
+        value: rediss://default:AVNS_6h6MB2S6N3DQu2r3Ezo@db-redis-nyc1-13574-do-user-10228058-0.b.db.ondigitalocean.com:25061
+
+
+envs:
+  - key: DJANGO_SETTINGS_MODULE
+    value: config.settings.production
+  - key: DJANGO_SECRET_KEY
+    value: b29wiW73vJhh3UrCVVFxkYMqLjbsvl8g
+  - key: DJANGO_ADMIN_URL
+    value: admin/
+  - key: DJANGO_ALLOWED_HOSTS
+    value: .ikigaidojo.ninja,.bossdesk.xyz
+  - key: DJANGO_SECURE_SSL_REDIRECT
+    value: 'False'
+  - key: DJANGO_SERVER_EMAIL
+    value:
+  - key: MAILGUN_API_KEY
+    value:
+  - key: MAILGUN_DOMAIN
+    value:
+  - key: DJANGO_ACCOUNT_ALLOW_REGISTRATION
+    value: 'True'
+  - key: WEB_CONCURRENCY
+    value: '4'
+  - key: SENTRY_DSN
+    value:
+  - key: REDIS_URL
+    value: redis://default:socrotescoffee@redis:6379/0
+  - key: CELERY_FLOWER_USER
+    value: flower
+  - key: CELERY_FLOWER_PASSWORD
+    value: flower
+  - key: CELERY_BROKER_URL
+    value: redis://default:socrotescoffee@localhost:6379/0
+  - key: YT_API_KEY
+    value: AIzaSyDLTKG_yxJypSuv5KvM4yq0rOfuP0DCkPY
+  - key: ENDPOINT_URL
+    value: https://ewr1.vultrobjects.com
+  - key: AWS_ACCESS_KEY_ID
+    value: A9ZBNCH9390JAWJEVE59
+  - key: AWS_SECRET_ACCESS_KEY
+    value: J1sZQxZ76ZTBP3Wm9sxhKeZfFayGnFkAIrVrBBHR

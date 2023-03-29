@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:v2.5
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  myapp:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.myapp.rule=Host(`myapp.example.com`)"
+      - "traefik.http.routers.myapp.entrypoints=http"
+      - "traefik.http.middlewares.myapp-strip-prefix.stripprefix.prefixes=/myapp"
+      - "traefik.http.routers.myapp.middlewares=myapp-strip-prefix"
+      - "traefik.http.services.myapp.loadbalancer.server.port=3000"
+      - "traefik.http.services.myapp.loadbalancer.server.scheme=http"

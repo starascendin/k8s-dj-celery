@@ -1,0 +1,8 @@
+name: aininja-dev
+services:
+- dockerfile_path: compose/production/django/Dockerfile
+  github:
+    branch: do
+    deploy_on_push: true
+    repo: starascendin/aininjas
+  name: aininja-dev

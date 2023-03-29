@@ -1,0 +1,76 @@
+# pytz==2022.7  # https://github.com/stub42/pytz
+# python-slugify==7.0.0  # https://github.com/un33k/python-slugify
+# Pillow==9.4.0  # https://github.com/python-pillow/Pillow
+# argon2-cffi==21.3.0  # https://github.com/hynek/argon2_cffi
+# whitenoise==6.3.0  # https://github.com/evansd/whitenoise
+# redis==4.4.1  # https://github.com/redis/redis-py
+# hiredis==2.1.0  # https://github.com/redis/hiredis-py
+# celery==5.2.7  # pyup: < 6.0  # https://github.com/celery/celery
+# django-celery-beat==2.4.0  # https://github.com/celery/django-celery-beat
+# flower==1.2.0  # https://github.com/mher/flower
+
+# # Django
+# # ------------------------------------------------------------------------------
+# django==4.0.8  # pyup: < 4.1  # https://www.djangoproject.com/
+# django-environ==0.9.0  # https://github.com/joke2k/django-environ
+# django-model-utils==4.3.1  # https://github.com/jazzband/django-model-utils
+# django-allauth==0.52.0  # https://github.com/pennersr/django-allauth
+# django-crispy-forms==1.14.0  # https://github.com/django-crispy-forms/django-crispy-forms
+# crispy-bootstrap5==0.7  # https://github.com/django-crispy-forms/crispy-bootstrap5
+# django-redis==5.2.0  # https://github.com/jazzband/django-redis
+
+
+# my stuff
+advertools == "^0.13.2"
+argon2-cffi == "21.3.0"
+asgiref == "^3.6.0"
+boto3 == "^1.26.80"
+celery == "5.2.7"
+crispy-bootstrap5 == "0.7"
+django == "4.1.5"
+django-allauth == "0.52.0"
+django-celery-beat == "2.4.0"
+django-cors-headers == "3.13.0"
+django-crispy-forms == "1.14.0"
+django-environ == "0.9.0"
+django-extensions == "3.2.1"
+django-health-check == "^3.17.0"
+django-model-utils == "4.3.1"
+django-ninja == "0.20.0"
+django-ninja-extra == "0.18.4"
+django-redis == "5.2.0"
+djfernet == "^0.8.1"
+emoji == "2.2.0"
+flower == "1.2.0"
+geckodriver-autoinstaller == "0.1.0"
+google-api-python-client == "^2.82.0"
+google-auth == "^2.16.3"
+google-auth-httplib2 == "^0.1.0"
+google-auth-oauthlib == "^1.0.0"
+gspread == "5.7.2"
+hiredis == "2.1.0"
+langchain == "^0.0.105"
+merry == "0.3.0"
+nltk == "3.8.1"
+oauth2client == "4.1.3"
+openai == "0.27.0"
+openai-async == "^0.0.3"
+pandas == "1.5.2"
+pillow == "9.4.0"
+plantuml == "0.3.0"
+psycopg2 == "2.9.5"
+python == "3.10.5"
+python-slugify == "7.0.0"
+python-youtube == "0.9.0"
+pytube == "12.1.2"
+pytz == "2022.7"
+redis == "4.4.1"
+revchatgpt == "2.3.5"
+scrapetube == "2.3.1"
+snscrape == "0.5.0.20230113"
+spacy == "3.5.0"
+supabase == "1.0.2"
+tiktoken == "^0.3.1"
+tweepy == "4.12.1"
+whitenoise == "6.3.0"
+youtube-transcript-api == "0.5.0"

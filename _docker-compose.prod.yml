@@ -1,0 +1,57 @@
+version: '3'
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  production_traefik: {}
+  production_tmp_files: {}
+  production_staticfiles: {}
+  production_static: {}
+  production_next: {}
+  production_redis_data: {}
+
+
+# BL: prod is similar to STAGING, just uses prod images
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: aininjas_prod_django
+
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.supabase
+    environment:
+      RUNTIME_ENV: PROD
+    volumes:      
+      - /home/bryanl/100gbdrive/tmp:/tmp    
+      - production_static:/app/static/
+      # - production_staticfiles:/app/staticfiles/
+
+  celeryworker: &celeryworker
+    image: aininjas_prod_celeryworker
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile  
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.supabase
+    environment:
+      RUNTIME_ENV: PROD
+    volumes:      
+      - /home/bryanl/100gbdrive/tmp:/tmp    
+
+
+  celerybeat:
+    <<: *celeryworker
+
+  flower:
+    <<: *celeryworker
+
+  frontend: &frontend
+    env_file:
+      - ./bossdesk-app/.env.staging
+      - ./bossdesk-app/app/.env.staging
+    environment:
+      RUNTIME_ENV: STAGING

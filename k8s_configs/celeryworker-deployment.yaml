@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celeryworker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celeryworker
+  template:
+    metadata:
+      labels:
+        app: celeryworker
+    spec:
+      containers:
+      - name: celeryworker
+        image: aininjas_production_celeryworker
+        envFrom:
+        - configMapRef:
+            name: django-env
+        volumeMounts:
+        - name: tmp-files
+          mountPath: /tmp
+        - name: app-files
+          mountPath: /app
+      volumes:
+      - name: tmp-files
+        hostPath:
+          path: /home/bryanl/100gbdrive/tmp
+      - name: app-files
+        hostPath:
+          path: /path/to/your/local/app

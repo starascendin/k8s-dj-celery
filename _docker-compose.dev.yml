@@ -1,0 +1,112 @@
+version: '3'
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  production_traefik: {}
+  production_tmp_files: {}
+  production_staticfiles: {}
+  production_next: {}
+  production_redis_data: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: aininjas_production_django
+    depends_on:
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.supabase
+      - redis.env    
+    command: /start
+    environment:
+      DJANGO_DEBUG: 0
+      RUNTIME_ENV: PROD
+    volumes:      
+      - /home/bryanl/100gbdrive/tmp:/tmp    
+      - ./.:/app:z
+    ports:
+      - "8013:5000"
+
+  celeryworker: &celeryworker
+    image: aininjas_production_celeryworker
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    depends_on:
+      # - postgres
+      - redis
+    command: /start-celeryworker
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.supabase
+      - redis.env
+    environment:
+      RUNTIME_ENV: PROD
+    volumes:      
+      - /home/bryanl/100gbdrive/tmp:/tmp
+      - ./.:/app:z
+
+  celerybeat:
+    <<: *celeryworker
+    image: aininjas_production_celerybeat
+    command: /start-celerybeat
+
+  flower:
+    <<: *celeryworker
+    image: aininjas_production_flower
+    command: /start-flower
+
+
+  redis:
+    image: redis:6
+    restart: unless-stopped    
+    ports:
+      - "6378:6379"
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_HOST_PASSWORD"
+    env_file:
+      - redis.env    
+    volumes:
+      - production_redis_data:/data    
+
+  frontend: &frontend
+    build:
+      context: ./bossdesk-app/.
+      # dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
+    image: aininjas_production_frontend
+    # command: yarn workspace app run dev
+    env_file:
+      - ./bossdesk-app/.env.production
+      - ./bossdesk-app/app/.env.production
+    environment:
+      RUNTIME_ENV: PROD
+    volumes:
+      - ./bossdesk-app:/app:z
+      - production_next:/app/app/.next
+    depends_on:
+      - django
+    environment:
+      RUNTIME_ENV: PROD
+    ports:
+      - "3011:3000"
+
+
+  traefik:
+    build:
+      context: .
+      dockerfile: ./compose/production/traefik/Dockerfile
+    image: aininjas_production_traefik
+    restart: on-failure
+    depends_on:
+      - django
+      - frontend
+    volumes:
+      - production_traefik:/etc/traefik/acme
+      - ./compose/production/traefik/traefik.yml:/etc/traefik/traefik.yml    
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"

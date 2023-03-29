@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: django-env
-data:
-  DJANGO_DEBUG: "0"
-  RUNTIME_ENV: "PROD"

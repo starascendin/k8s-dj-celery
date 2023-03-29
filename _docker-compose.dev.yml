@@ -14,7 +14,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: aininjas_production_django
+    image: aininjas_production_test_django
     depends_on:
       - redis
     env_file:
@@ -32,7 +32,7 @@ services:
       - "8013:5000"
 
   celeryworker: &celeryworker
-    image: aininjas_production_celeryworker
+    image: aininjas_production_test_celeryworker
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
@@ -52,12 +52,12 @@ services:
 
   celerybeat:
     <<: *celeryworker
-    image: aininjas_production_celerybeat
+    image: aininjas_production_test_celerybeat
     command: /start-celerybeat
 
   flower:
     <<: *celeryworker
-    image: aininjas_production_flower
+    image: aininjas_production_test_flower
     command: /start-flower
 
 
@@ -77,7 +77,7 @@ services:
       context: ./bossdesk-app/.
       # dockerfile: Dockerfile
       dockerfile: Dockerfile.prod
-    image: aininjas_production_frontend
+    image: aininjas_production_test_frontend
     # command: yarn workspace app run dev
     env_file:
       - ./bossdesk-app/.env.production
@@ -99,7 +99,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/traefik/Dockerfile
-    image: aininjas_production_traefik
+    image: aininjas_production_test_traefik
     restart: on-failure
     depends_on:
       - django

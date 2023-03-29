@@ -18,7 +18,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: aininjas_production_django
+    image: aininjas_production_test_django
     depends_on:
       - redis
     env_file:
@@ -38,7 +38,7 @@ services:
       - ikigaidojo_network
 
   celeryworker: &celeryworker
-    image: aininjas_production_celeryworker
+    image: aininjas_production_test_celeryworker
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
@@ -60,14 +60,14 @@ services:
 
   celerybeat:
     <<: *celeryworker
-    image: aininjas_production_celerybeat
+    image: aininjas_production_test_celerybeat
     command: /start-celerybeat
     networks:
       - ikigaidojo_network
 
   flower:
     <<: *celeryworker
-    image: aininjas_production_flower
+    image: aininjas_production_test_flower
     command: /start-flower
     networks:
       - ikigaidojo_network

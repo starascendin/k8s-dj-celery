@@ -32,12 +32,12 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: |
-          registry.digitalocean.com/aininjas-docker-registry/aininjas_production_django:latest
+          registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_django:latest
 
 
-# registry.digitalocean.com/aininjas-docker-registry/aininjas_production_celeryworker:latest
-          # registry.digitalocean.com/aininjas-docker-registry/aininjas_production_celerybeat:latest
-          # registry.digitalocean.com/aininjas-docker-registry/aininjas_production_flower:latest
+# registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_celeryworker:latest
+          # registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_celerybeat:latest
+          # registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_flower:latest
 
     # - name: Build and push Docker images from Docker Compose
     #   run: |

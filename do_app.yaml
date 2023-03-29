@@ -7,7 +7,7 @@ services:
       deploy_on_push: true
       repo: starascendin/aininjas
     dockerfile_path: compose/production/django/Dockerfile
-    # build_command: docker build -t aininjas_production_django .
+    # build_command: docker build -t aininjas_production_test_django .
     run_command: /start
     http_port: 5000
     envs:
@@ -27,7 +27,7 @@ services:
       deploy_on_push: true
       repo: starascendin/aininjas
     dockerfile_path: compose/production/django/Dockerfile
-    # build_command: docker build -t aininjas_production_celerybeat .
+    # build_command: docker build -t aininjas_production_test_celerybeat .
     run_command: /start-celerybeat
     envs:
       - key: RUNTIME_ENV
@@ -43,7 +43,7 @@ services:
       deploy_on_push: true
       repo: starascendin/aininjas
     dockerfile_path: compose/production/django/Dockerfile
-    # build_command: docker build -t aininjas_production_flower .
+    # build_command: docker build -t aininjas_production_test_flower .
     run_command: /start-flower
     http_port: 5555
     envs:
@@ -60,7 +60,7 @@ jobs:
       deploy_on_push: true
       repo: starascendin/aininjas
     dockerfile_path: compose/production/django/Dockerfile
-    # build_command: docker build -t aininjas_production_celeryworker .
+    # build_command: docker build -t aininjas_production_test_celeryworker .
     run_command: /start-celeryworker
     envs:
       - key: RUNTIME_ENV

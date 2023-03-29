@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: celeryworker
-        image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_celeryworker
+        image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_celeryworker
         resources:
           requests:
             cpu: "500m"

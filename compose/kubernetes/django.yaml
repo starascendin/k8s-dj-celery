@@ -18,7 +18,7 @@ spec:
       containers:
       - args:
         - /start
-        image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_django
+        image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_django
         name: django
 
         ports:

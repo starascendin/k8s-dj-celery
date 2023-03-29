@@ -27,7 +27,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: aininjas_production_postgres
+    image: aininjas_production_test_postgres
     container_name: aininjas_local_postgres
     volumes:
       - aininjas_local_postgres_data:/var/lib/postgresql/data

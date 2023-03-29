@@ -18,8 +18,8 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    # image: aininjas_production_django
-    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_django:latest
+    # image: aininjas_production_test_django
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_django:latest
     depends_on:
       - redis
     env_file:
@@ -40,8 +40,8 @@ services:
 
   celeryworker:
     <<: *django
-    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_celeryworker:latest
-    # image: aininjas_production_celeryworker
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_celeryworker:latest
+    # image: aininjas_production_test_celeryworker
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
@@ -63,16 +63,16 @@ services:
 
   celerybeat:
     <<: *django
-    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_celerybeat:latest
-    # image: aininjas_production_celerybeat
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_celerybeat:latest
+    # image: aininjas_production_test_celerybeat
     command: /start-celerybeat
     networks:
       - ikigaidojo_network
 
   flower:
     <<: *django
-    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_flower:latest
-    # image: aininjas_production_flower
+    image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_flower:latest
+    # image: aininjas_production_test_flower
     command: /start-flower
     networks:
       - ikigaidojo_network

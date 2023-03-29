@@ -27,7 +27,7 @@ spec:
               name: secrets-production-django
           - secretRef:
               name: secrets-production-postgres
-        image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_flower
+        image: registry.digitalocean.com/aininjas-docker-registry/aininjas_production_test_flower
         env:
           - name: CELERY_BROKER_URL
             value: $(REDIS_URL)
